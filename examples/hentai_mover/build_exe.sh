@@ -12,4 +12,5 @@ ADD_DATA="$ICON;."
 
 cd "$CWD" || exit 1
 rm -rf dist build __pycache__ "$NAME.spec"
+uv sync
 uv run pyinstaller "$SCRIPT" --clean --onefile --noconsole "--add-data=$ADD_DATA" "--name=$NAME" "--icon=$ICON" --paths="$REPO_ROOT"

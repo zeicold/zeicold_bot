@@ -1,0 +1,17 @@
+[project]
+name = "hentai-mover"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "json5>=0.12.1",
+    "watchdog>=6.0.0",
+    "zeicold-bot",
+]
+
+[tool.uv.sources]
+zeicold-bot = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.17.0",
+]
