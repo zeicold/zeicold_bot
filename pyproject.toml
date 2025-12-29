@@ -1,0 +1,32 @@
+[project]
+name = "zeicold-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "addict>=2.4.0",
+    "attrs>=25.4.0",
+    "freesimplegui>=5.2.0.post1",
+    "freesimpleguiqt>=2.0.0",
+    "freesimpleguiwx>=1.1.0",
+    "json5>=0.12.1",
+    "loguru>=0.7.3",
+    "pyinstaller>=6.17.0",
+    "watchdog>=6.0.0",
+    "yt-dlp>=2025.12.8",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
+
+[tool.black]
+line-length = 200
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
