@@ -1,4 +1,4 @@
-"""移动 Hentai 文件的机器人行为模块"""
+"""移动 Hentai 文件的机器人示例"""
 
 import shutil
 import time
@@ -114,7 +114,7 @@ class MoveHentaiHandler(FileSystemEventHandler):
         # 移动文件到目标目录
         dest_path = self.dst_dir / zip_name
         shutil.move(file_path, dest_path)
-        self.bot.show_message("信息", f"已将图片移动到 {dest_path}")
+        self.bot.show_message("信息", f"已将图片 {file_path.name} 移动到 {dest_path}")
 
 
 @attrs.define(slots=True)
@@ -194,3 +194,69 @@ class MoveHentaiAction(BotAction):
         self.observer.join()
         del self.observer
         super().stop()
+
+
+@attrs.define(slots=True)
+class MoveHentaiBot(ZeicoldBot):
+    """移动 Hentai 机器人"""
+
+    icon: Path = Path(__file__).parent / "robot.ico"
+    """机器人图标路径"""
+
+    name: str = "MoveHentaiBot"
+    """机器人名称"""
+
+    description: str = "一个用于自动移动 Hentai 图片的机器人"
+    """机器人描述"""
+
+    src_dir: Path = Path.home() / "Downloads"
+    """Hentai 图片的源目录"""
+
+    dst_dir: Path = Path.home() / "Pictures" / "Hentai"
+    """Hentai 图片的目标目录"""
+
+    def __attrs_post_init__(self) -> None:
+        super().__attrs_post_init__()
+        self.actions.append(
+            MoveHentaiAction(
+                bot=self,
+                arg_values={
+                    "src_dir": str(self.src_dir),
+                    "dst_dir": str(self.dst_dir),
+                    "process_once": True,
+                },
+            )
+        )
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="启动 MoveHentaiBot 机器人")
+    parser.add_argument(
+        "--src-dir",
+        "-s",
+        type=Path,
+        help="Hentai 图片的源目录, 默认 %(default)s",
+        default=Path.home() / "Downloads",
+    )
+    parser.add_argument(
+        "--dst-dir",
+        "-d",
+        type=Path,
+        help="Hentai 图片的目标目录, 默认 %(default)s",
+        default=Path.home() / "Pictures" / "Hentai",
+    )
+    parser.add_argument(
+        "--notify",
+        action="store_true",
+        help="启用桌面通知功能, 默认 %(default)s",
+        default=False,
+    )
+    args = parser.parse_args()
+    hentai_mover_bot = MoveHentaiBot(
+        src_dir=args.src_dir,
+        dst_dir=args.dst_dir,
+        notify=args.notify,
+    )
+    hentai_mover_bot.run()

@@ -20,8 +20,8 @@ class IconNotFoundError(RuntimeError):
 class ZeicoldBot(INameAndDescription):
     """机器人基类"""
 
-    icon: Path | None = None
-    """机器人的图标路径, 默认 None 表示使用默认图标"""
+    icon: Path = Path.cwd() / "robot.ico"
+    """机器人的图标路径, 默认值为当前文件夹下的 robot.ico"""
 
     tray: sg.SystemTray = attrs.field(init=False)
     """系统托盘对象"""
@@ -80,29 +80,6 @@ class ZeicoldBot(INameAndDescription):
         """更新系统托盘菜单"""
         self.tray.update(menu=self.menu)
 
-    def get_icon_path(self) -> Path:
-        """获取图标路径
-
-        Returns:
-            Path: 图标路径
-        """
-        if (not isinstance(self.icon, Path)) or (self.icon is not None):
-            self.icon = None
-
-        for icon_path in [
-            self.icon,
-            Path(__file__).parents[1] / "assets/icons/robot.ico",
-            Path(__file__).parent / "robot.ico",  # for pyinstaller
-        ]:
-            if icon_path is None:
-                continue
-            if not icon_path.exists():
-                continue
-            self.icon = icon_path
-            return icon_path
-
-        raise IconNotFoundError("机器人图标未找到, 请确保图标文件存在于 assets/icons/robot.ico 或与可执行文件同目录下")
-
     def __attrs_post_init__(self) -> None:
         """初始化动作
 
@@ -112,7 +89,6 @@ class ZeicoldBot(INameAndDescription):
             '测试动作'
         """
         super().__attrs_post_init__()
-        self.get_icon_path()
         self.tray = sg.SystemTray(menu=self.menu, filename=str(self.icon))
         self.show_message("机器人已启动", f"机器人 {self.name} 已启动")
 
